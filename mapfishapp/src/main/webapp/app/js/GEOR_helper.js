@@ -46,7 +46,7 @@ GEOR.helper = function(){
             }
             if (!msgCt){
                 msgCt = Ext.DomHelper.insertFirst(document.body, {
-                    id:'help-div'
+                    id: 'help-div'
                 }, true);
             }
             msgCt.alignTo(document, 't-t');

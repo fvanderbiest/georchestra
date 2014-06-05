@@ -203,6 +203,7 @@ Ext.namespace("GEOR");
         // this panel serves as the container for
         // the "search results" tabs
         var tab = new GEOR.ResultsPanel({
+            itemId: "_help",
             html: tr("resultspanel.emptytext")
         });
         var tabCreationLocked = false;
@@ -226,7 +227,16 @@ Ext.namespace("GEOR");
                 border: false,
                 frame: false
             },
-            items: [tab, {
+            items: [tab /*{
+                bodyStyle: 'padding: 5px',
+                title: tr("Query results"),
+                itemId: "_initial",
+                html: tr("resultspanel.emptytext"),
+                // hack:
+                lower: Ext.emptyFn,
+                clean: Ext.emptyFn,
+                raise: Ext.emptyFn
+            }/*tab, {
                 id: 'addPanel', 
                 title: '+', 
                 tabTip: tr('Add query'), 
@@ -234,7 +244,7 @@ Ext.namespace("GEOR");
                 // hack:
                 lower: Ext.emptyFn,
                 raise: Ext.emptyFn
-            }],
+            }*/],
             listeners: {
                 'collapse': function(panel) {
                     panel.items.each(function(tab) {
@@ -245,13 +255,13 @@ Ext.namespace("GEOR");
                     panel.getActiveTab().raise();
                 },
                 'tabchange': function(panel, t) {
-                    if (t.id == 'addPanel' && !tabCreationLocked) {
+                    /*if (t.id == 'addPanel' && !tabCreationLocked) {
                         var tab = new GEOR.ResultsPanel({
                             html: tr("resultspanel.emptytext")
                         });
                         panel.insert(panel.items.length-1, tab);
                         panel.setActiveTab(tab);
-                    }
+                    }*/
                     panel.items.each(function(tab) {
                         tab.lower();
                     });
@@ -345,6 +355,13 @@ Ext.namespace("GEOR");
             tabCreationLocked = false;
         }
 
+        // remove the temporary search tab, named "WMS search"
+        var removeTempTab = function() {
+            tabCreationLocked = true;
+            southPanel.remove();
+            tabCreationLocked = false;
+        }
+        
         // Handle layerstore initialisation
         // with wms/services/wmc from "panier"
         GEOR.mapinit.init(layerStore, function() {
@@ -435,7 +452,7 @@ Ext.namespace("GEOR");
                         tab.clean();
                     }
                     var panel = Ext.apply({
-                        bodyStyle: 'padding:5px'
+                        //bodyStyle: 'padding:5px'
                     }, panelCfg);
                     tab.removeAll();
                     tab.add(panel);
@@ -443,11 +460,12 @@ Ext.namespace("GEOR");
                     southPanel.expand();
                 },
                 "searchresults": function(options) {
-                    removeActiveTab();
+                    //removeActiveTab(); // FIXME: IS not enough, eg when in case of aggregated layer query: multiple tabs to remove.
+                    // solution: instead of removing and re-creating tabs, re-use them !
                     Ext.iterate(options.results, function(featureType, result) {
-                        var tab = new GEOR.ResultsPanel({
+                        var tab = southPanel.getComponent(featureType) || new GEOR.ResultsPanel({
                             html: tr("resultspanel.emptytext"),
-                            //itemId: featureType, // XXX assume only one tab per featuretype ?
+                            itemId: featureType, // here: assume **only one** tab per featuretype !
                             tabTip: result.tooltip,
                             title: result.title,
                             map: map

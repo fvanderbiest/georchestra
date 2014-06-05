@@ -123,9 +123,9 @@ GEOR.toolbar = (function() {
         items.push("-");
 
         items.push({
-            xtype: 'button',
+            xtype: 'button', // useless
             iconCls: 'geor-btn-info',
-            allowDepress: true,
+            allowDepress: true, // probably useless
             enableToggle: true,
             toggleGroup: 'map',
             tooltip: tr("Query all active layers"),

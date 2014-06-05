@@ -63,9 +63,9 @@ OpenLayers.Lang.en = OpenLayers.Util.extend(OpenLayers.Lang.en, {
     "server upload error: ERROR": "Upload failed. ${ERROR}",
     /* GEOR_geonames.js strings */
     /* GEOR_getfeatureinfo.js strings */
-    "<div>Search on objects active for NAME layer. Clic on the map.</div>":
-         "<div>Search on objects active for ${NAME} layer. " +
-         "Clic on the map.</div>",
+    "<div>Search is active on the <b>NAME</b> layer. <br/>Click on the map.</div>":
+         "<div>Search is active on the <b>${NAME}</b> layer. " +
+         "<br/>Click on the map.</div></div>",
     /* GEOR_layerfinder.js strings */
     "layerfinder.layer.unavailable":
         "The ${NAME} layer could not be found in WMS service.<br/<br/>" +

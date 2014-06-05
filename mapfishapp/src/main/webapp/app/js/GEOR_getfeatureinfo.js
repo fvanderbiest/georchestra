@@ -153,7 +153,7 @@ GEOR.getfeatureinfo = (function() {
         // to gracefully handle the case when no data is found
         Ext.each(ctrl.layers, function (layer) {
             results[layer.params.LAYERS] = {
-                title: GEOR.util.shortenLayerName(layer),
+                title: GEOR.util.shortenLayerName(layer.name),
                 tooltip: layer.name + " - " + tr("WMS GetFeatureInfo at ") + coordstr,
                 features: []
             };
@@ -303,8 +303,9 @@ GEOR.getfeatureinfo = (function() {
          * APIMethod: toggle
          *
          * Parameters:
-         * record - {GeoExt.data.LayerRecord | OpenLayers.Layer.WMS} the layer
-         * record is false if it's a multi-layer query
+         * record - {GeoExt.data.LayerRecord | OpenLayers.Layer.WMS | Boolean} 
+         *      the layerRecord or the layer to query
+         *      false if it's a multi-layer query
          * state - {Boolean} Toggle to true or false this layer ?
          */
         toggle: function(record, state) {
@@ -320,6 +321,8 @@ GEOR.getfeatureinfo = (function() {
                 type = record.get("type");
             } else if (record === false) {
                 type = "WMS"; // XXX assume all layers queried are WMS ?
+                // hmm, this is probably wrong :-(
+                // FIXME: take into account WMTS layers
                 layerStore.each(function(layerRecord) {
                     if (layerRecord.get("queryable") && 
                         layerRecord.getLayer().visibility == true) {
@@ -333,13 +336,17 @@ GEOR.getfeatureinfo = (function() {
                     html: tr("No active layers.")
                 });
                 observable.fireEvent("shutdown");
+                /*
+                GEOR.helper.msg(tr("No active layer !"), tr("You selected the multilayer query tool, but there are no layers to query."));
+                observable.fireEvent("shutdown");
+                */
             } else if (state) {
                 Xsearch = (record === false ? true : false);
                 observable.fireEvent("search", {
                     html: Xsearch ? 
                         tr("Search on all active layers") :
-                        tr("<div>Search on objects active for NAME layer. " +
-                            "Clic on the map.</div>",
+                        tr("<div>Search is active on the <b>NAME</b> layer. " +
+                            "<br/>Click on the map.</div>",
                             {'NAME': title})
                 });
 
